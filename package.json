@@ -20,10 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/node": "^13.11.1",
-    "@types/random-useragent": "^0.3.0",
     "axios": "^0.19.2",
-    "punycode": "^2.1.1",
-    "random-useragent": "^0.3.1",
     "typescript": "^3.8.3"
   },
   "directories": {

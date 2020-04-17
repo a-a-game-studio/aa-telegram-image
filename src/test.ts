@@ -1,41 +1,10 @@
 import axios from 'axios';
-import randomUseragent = require('random-useragent');
-import punycode = require('punycode');
 
 import * as bot from './bot';
 
 import { faSendImgByUrl, faGetImg } from "./index";
 
-const fProcessUrl = (fileSource: string): string => {
-    try {
-        const aUrl: string[] = fileSource.split('/');
-        let domain = aUrl[2];
-        domain = punycode.toASCII(domain);
-        let url = `${aUrl[0]}//${domain}`;
-        for (let i = 3; i < aUrl.length; i++) {
-            url += `/${aUrl[i]}`;
-        }
-        fileSource = url;
-    } catch (e) {
-        // если чтото не так ничего не делаем
-    }
 
-    return fileSource;
-}
-
-
-const faLoadFileByAxios = async (sUrl: string): Promise<Buffer> => {
-    const userAgent = randomUseragent.getRandom((ua: any) => ua.browserName === 'Firefox');
-
-    const respAxios = await axios.get(encodeURI(decodeURI(fProcessUrl(sUrl))), {
-        responseType: 'arraybuffer',
-        headers: {
-            'User-Agent': { userAgent },
-        },
-    });
-
-    return respAxios.data;
-}
 
 async function sendMsg() {
 
@@ -53,31 +22,6 @@ async function sendMsg() {
                 }
             }
         );
-        console.dir(respAxios.data.result);
-
-    } catch (e) {
-        //console.log(e);
-    }
-}
-async function sendImg(photo: string) {
-
-    const data = {
-        chat_id: bot.chat_id,
-        //photo: 'https://thumb.cloud.mail.ru/weblink/thumb/xw1/epKF/5EWfAfHFM/juno.jpg',
-        photo: 'https://thumb.cloud.mail.ru/weblink/thumb/xw1/epKF/5EWfAfHFM/juno.jpg',
-        caption: 'test photo'
-    };
-
-    try {
-        const respAxios = await axios.post(`https://api.telegram.org/bot${bot.token}/sendPhoto`,
-            data,
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-
         console.dir(respAxios.data.result);
 
     } catch (e) {
