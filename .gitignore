@@ -60,4 +60,7 @@ typings/
 # next.js build output
 .next
 
-./src/bot.ts
+src/bot.ts
+lib/bot.js
+lib/bot.d.ts
+lib/bot.js.map
