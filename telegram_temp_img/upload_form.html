@@ -1,124 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
+
 <body>
 
-    <div class="myform container" style="width: 500px;">
-        <form>
-            <div class="form-group">
-              <label for="exampleInputEmail1">Email address</label>
-              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-            </div>
-            <div class="form-group">
-              <label for="exampleInputPassword1">Password</label>
-              <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-            </div>
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="exampleCheck1">
-              <label class="form-check-label" for="exampleCheck1">Check me out</label>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
-    </div>
-    
-<script>
+  <div class="myform container" style="width: 500px;">
+    <form1>
+
+      <div class="form-group">
+        <label for="exampleInputPassword1">Выберите картинку</label>
+        <input type="file" class="form-control" id="file_input">
+      </div>
+
+      <button type="button" class="btn btn-primary">Submit</button>
+
+      <img id="img_id" src="">
+    </form1>
+  </div>
 
 
-/**
- * Resize image width
- */
- function faResizeImg(nWidth) {
-    return function (buffImg64) {
-        return new Promise(function (resolve, reject) {
-            /* Create img native class */
-            var img = new Image();
-            /* insert base64img */
-            img.src = buffImg64;
-            /* loading... */
-            img.onload = function () {
-                /* cavas manipulating */
-                var canvas = document.createElement('canvas');
-                canvas.width = nWidth;
-                /* calc height */
-                canvas.height = canvas.width * (img.height / img.width);
-                var ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                resolve(canvas.toDataURL('image/jpeg', 0.7));
-            }; // img.onload
-        }); // Promise
+  <script>
+    var exports = {}
+  </script>
+  <script type="text/javascript" src="exif.js"></script>
+  <script type="text/javascript" src="image_m.js"></script>
+
+  <script>
+
+    function readFileAsync(file) {
+      return new Promise((resolve, reject) => {
+        let reader = new FileReader();
+
+        reader.onload = () => {
+          resolve(reader.result);
+        };
+
+        reader.onerror = reject;
+        reader.readAsText(file, "cp1251");
+      })
     }
-};
 
 
+    function onSelectFile(evt) {
+      try {
+        let files = evt.target.files;
+        /* если нету файлов то ошибка */
+        if (!files) {
+          console.log('fileIsEmpty', 'Возможно Ваш файл пуст. Загрузите другую версию файла.')
+          throw "empty files";
+        }
 
-/**
- * выдает base64 из файла
- * @param {*} file
- */
- function getBase64(file) {
-    return new Promise(function (resolve, reject) {
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function () {
-            resolve(reader.result);
-        };
-        reader.onerror = function (error) {
-            alert('Error: ', error);
-        };
-    });
-}
+        console.log(files);
 
+        exports.faGetBase64(files[0]).then(function (data) {
+          console.log(data);
+
+      var el = document.getElementById("img_id");
+      el.setAttribute('src', data)
 
 
-/**
- * загрузка картинки
- * @param {File} file - File
- * @param {string} url - string
- * @param {Object} params - параметры для api
- */
- function upload_image(file, url, params) {
-    return new Promise(function (resolve, reject) {
-
-        /* читаем файл */
-        getBase64(file).then(function (buffImg64) {
-            return faResizeImg(1024)(buffImg64); // ресйзим на 1024
         })
-            .then(function (buffImg641024) {
-                $.ajax({
-                    headers: {
-                        'apikey': getCookie('apikey'),
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    url: window['API_V2_URL'] + url,
-                    data:
-                        Object.assign({ dataBase64: buffImg641024 }, params)
-                    ,
-                    type: "POST",
 
-                    success: function (response) {
-                        resolve({
-                            id: response.data.id,
-                            img: buffImg641024,
-                        }) // выдаем картинку измененного размера
-                    },
-                    error: function (jqXHR, textStatus, errorMessage) {
-                        reject(errorMessage);
-                    }
-                }); //$.ajax
-            }); // getBase64
-    }) // Promise
-}
+      } catch (e) {
+        console.log(e);
+      }
 
+    }
 
+    function main() {
+      var el = document.getElementById("file_input");
+      el.addEventListener("change", onSelectFile, false)
+    }
 
-</script>
+    main();
+
+  </script>
 
 </body>
+
 </html>
