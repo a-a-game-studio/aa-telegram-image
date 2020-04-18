@@ -3,6 +3,10 @@ import * as ImgS from "./ImgS";
 import { AATelegramImageSys } from "./AATelegramImageSys";
 import * as bot from "./bot";
 
+import uniqid = require('uniqid');
+
+var crypto = require('crypto');
+
 export enum ImgSizeE {
     s302 = 320,
     s800 = 800,
@@ -53,7 +57,7 @@ export class AATelegramImage {
     protected token: string;
 
     public tempFileUrl = '/telegram_temp_img/';
-    public hostUrl = 'http://likechoco.ru:3008'
+    public hostUrl = 'http://likechoco.ru'
 
     constructor(token: string, db: any, redisClient: any) {
         this.token = token;
@@ -84,7 +88,7 @@ export class AATelegramImage {
 
         const input: ImgUploadR.RequestI = req.body;
 
-        const fileName = '1.jpg'
+        const fileName = `${this.generateFilename()}.jpg`;
         const sSaveFilePath = __dirname + '/../telegram_temp_img/';
 
         const sFileUrl = `${this.hostUrl}${this.tempFileUrl}${fileName}`;
@@ -93,22 +97,12 @@ export class AATelegramImage {
         let error = [];
         try {
             await ImgS.faSaveBase64ToFile(input.fileBase64, `${sSaveFilePath}/${fileName}`);
+            await aATelegramImageSys.faSendImgByUrl(bot.chat_id, sFileUrl, 'Привет');
+
         } catch (e) {
             error.push(e)
             console.log(e);
-        }
-
-        setTimeout(async () => {
-            try {
-                await aATelegramImageSys.faSendImgByUrl(bot.chat_id, sFileUrl, 'Привет');
-
-            } catch (e) {
-                error.push(e)
-                console.log(e.response);
-            }
-
-        }, 1000)
-
+        }       
 
         resp.send({
             ok: true,
@@ -133,4 +127,8 @@ export class AATelegramImage {
 
         resp.send(file);
     }
+
+    public generateFilename(): string {        
+		return crypto.createHash('md5').update(uniqid()).digest("hex");;
+	}
 }

@@ -51,4 +51,5 @@ export declare class AATelegramImage {
      * @param next
      */
     faFileGetCtrl(req: any, resp: any, next: any): Promise<void>;
+    generateFilename(): string;
 }
