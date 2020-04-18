@@ -2,9 +2,7 @@ import axios from 'axios';
 
 import * as bot from './bot';
 
-import { faSendImgByUrl, faGetImg } from "./index";
-
-
+import { AATelegramImageSys } from "./index";
 
 async function sendMsg() {
 
@@ -54,7 +52,7 @@ const faTestFnc = async () => {
 
         respAxios = await axios.get(`https://api.telegram.org/file/bot${bot.token}/${respAxios.data.result.file_path}`);
         respAxios.data
-       // console.dir(respAxios);
+        // console.dir(respAxios);
 
     } catch (e) {
         //console.log(e);
@@ -63,20 +61,17 @@ const faTestFnc = async () => {
 }
 
 
-//faTestFnc();
+async function main() {
 
-faGetImg(bot.token,'AgACAgQAAx0ETCGJ2QACAhhemeXIwZhtYdDLpogZ2epDSnhDSAACAasxG6h01FDQQ0zykJObCqK1BiNdAAMBAAMCAANtAAPigAACGAQ')
-.then(data=>{
+    const aATelegramImageSys = new AATelegramImageSys.AATelegramImageSys(bot.token, null, null);
+
+    //let data= aATelegramImageSys.faGetUpdates();
+    let img = `http://likechoco.ru:3008`;
+    let data = await aATelegramImageSys.faSendImgByUrl(bot.chat_id, img, 'Привет');
+
     console.log(data);
-    
-})
 
-/* 
+}
 
-faSendImgByUrl(bot.token, bot.chat_id, 
-    `https://thumb.cloud.mail.ru/weblink/thumb/xw1/4NZB/5hq2BURmx/%D0%A7%D0%B8%D1%81%D1%82%D0%B0%D1%8F%20%D0%B2%D0%BE%D0%B4%D0%B0.jpg`,
-    'test'
-    ).then(data =>{
-        console.log(data);
-        
-    }) */
+
+main();
