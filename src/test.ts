@@ -66,7 +66,7 @@ async function main() {
     const aATelegramImageSys = new AATelegramImageSys.AATelegramImageSys(bot.token, null, null);
 
     //let data= aATelegramImageSys.faGetUpdates();
-    let img = `http://likechoco.ru:3008`;
+    let img = `http://likechoco.ru/img/majent1_b.jpg`;
     let data = await aATelegramImageSys.faSendImgByUrl(bot.chat_id, img, 'Привет');
 
     console.log(data);

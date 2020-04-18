@@ -33,6 +33,7 @@ export declare class AATelegramImage {
     protected redisClient: any;
     protected token: string;
     tempFileUrl: string;
+    hostUrl: string;
     constructor(token: string, db: any, redisClient: any);
     faPutImg(): Promise<number>;
     faGetImg(id: number, size: ImgSizeE): Promise<any>;

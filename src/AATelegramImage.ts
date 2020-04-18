@@ -1,4 +1,7 @@
 var fs = require('fs');
+import * as ImgS from "./ImgS";
+import { AATelegramImageSys } from "./AATelegramImageSys";
+import * as bot from "./bot";
 
 export enum ImgSizeE {
     s302 = 320,
@@ -50,6 +53,7 @@ export class AATelegramImage {
     protected token: string;
 
     public tempFileUrl = '/telegram_temp_img/';
+    public hostUrl = 'http://likechoco.ru:3008'
 
     constructor(token: string, db: any, redisClient: any) {
         this.token = token;
@@ -75,12 +79,43 @@ export class AATelegramImage {
      * @param next 
      */
     public async faFileUploadCtrl(req: any, resp: any, next: any) {
+
+        const aATelegramImageSys = new AATelegramImageSys(bot.token, null, null);
+
+        const input: ImgUploadR.RequestI = req.body;
+
+        const fileName = '1.jpg'
+        const sSaveFilePath = __dirname + '/../telegram_temp_img/';
+
+        const sFileUrl = `${this.hostUrl}${this.tempFileUrl}${fileName}`;
+
+        console.log(sFileUrl);
+        let error = [];
+        try {
+            await ImgS.faSaveBase64ToFile(input.fileBase64, `${sSaveFilePath}/${fileName}`);
+        } catch (e) {
+            error.push(e)
+            console.log(e);
+        }
+
+        setTimeout(async () => {
+            try {
+                await aATelegramImageSys.faSendImgByUrl(bot.chat_id, sFileUrl, 'Привет');
+
+            } catch (e) {
+                error.push(e)
+                console.log(e.response);
+            }
+
+        }, 1000)
+
+
         resp.send({
             ok: true,
             data: {
                 file_id: 0,
             },
-            errors: [],
+            errors: error,
         });
     }
     /**
@@ -91,11 +126,11 @@ export class AATelegramImage {
      */
     public async faFileGetCtrl(req: any, resp: any, next: any) {
 
-        const fileId = req.params.file_id;        
+        const fileId = req.params.file_id;
 
 
         let file = '';
-     
+
         resp.send(file);
     }
 }
