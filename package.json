@@ -20,6 +20,7 @@
   "author": "John Shepard",
   "license": "MIT",
   "dependencies": {
+    "@a-a-game-studio/aa-redis-sys": "^1.0.2",
     "@types/node": "^13.11.1",
     "@types/uniqid": "^4.1.3",
     "axios": "^0.19.2",

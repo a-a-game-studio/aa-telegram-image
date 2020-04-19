@@ -1,11 +1,12 @@
-var fs = require('fs');
 import * as ImgS from "./ImgS";
 import { AATelegramImageSys } from "./AATelegramImageSys";
 import * as bot from "./bot";
 
 import uniqid = require('uniqid');
 
-var crypto = require('crypto');
+const crypto = require('crypto');
+
+import { CacheSys } from "@a-a-game-studio/aa-redis-sys/lib";
 
 export enum ImgSizeE {
     s302 = 320,
@@ -59,7 +60,7 @@ export class AATelegramImage {
     public tempFileUrl = '/telegram_temp_img/';
     public hostUrl = 'http://likechoco.ru'
 
-    constructor(token: string, db: any, redisClient: any) {
+    constructor(token: string, db: any, redisClient: CacheSys.CacheSys) {
         this.token = token;
         this.db = db;
         this.redisClient = redisClient;
@@ -88,7 +89,7 @@ export class AATelegramImage {
 
         const input: ImgUploadR.RequestI = req.body;
 
-        const fileName = `${this.generateFilename()}.jpg`;
+        const fileName = this.fMd5(input.fileBase64) + '.jpg';
         const sSaveFilePath = __dirname + '/../telegram_temp_img/';
 
         const sFileUrl = `${this.hostUrl}${this.tempFileUrl}${fileName}`;
@@ -123,9 +124,13 @@ export class AATelegramImage {
         const fileId = req.params.file_id;
 
 
-        let file = '';
+        
+        resp.contentType('image/jpeg');
+        resp.send('data');
+    }
 
-        resp.send(file);
+    public fMd5(s: string) {
+        crypto.createHash('md5').update(s).digest("hex");;
     }
 
     public generateFilename(): string {        
