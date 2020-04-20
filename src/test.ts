@@ -1,8 +1,10 @@
 import axios from 'axios';
+const crypto = require('crypto');
 
 import * as bot from './bot';
 
 import { AATelegramImageSys } from "./index";
+import { AATelegramImageDB } from './AATelegramImageDB'
 
 async function sendMsg() {
 
@@ -27,6 +29,8 @@ async function sendMsg() {
     }
 }
 
+
+import { db } from './testServer/DBConnect'
 
 const faTestFnc = async () => {
     const data = {
@@ -61,7 +65,7 @@ const faTestFnc = async () => {
 }
 
 
-async function main() {
+async function main1() {
 
     const aATelegramImageSys = new AATelegramImageSys.AATelegramImageSys(bot.token, null, null);
 
@@ -74,4 +78,22 @@ async function main() {
 }
 
 
-main();
+async function main() {
+    let a = crypto.createHash('md5').update('asdasd').digest("hex");
+    console.log(a.length);
+
+    const aATelegramImageDB = new AATelegramImageDB(db);
+
+    let data = await aATelegramImageDB.faGetTelegramFile('string');
+
+    console.log(data);
+    
+
+}
+
+
+main1();
+
+
+
+

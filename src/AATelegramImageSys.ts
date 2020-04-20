@@ -81,7 +81,7 @@ export class AATelegramImageSys {
             }
         );
 
-        respAxios = await axios.get(`${this.sTelegramApiUrl}/file/bot${this.token}/${respAxios.data.result.file_path}`);
+        respAxios = await axios.get(`${this.sTelegramApiUrl}/file/bot${this.token}/${respAxios.data.result.file_path}`, { responseType: 'arraybuffer' });
 
         return respAxios.data;
     }
@@ -89,7 +89,7 @@ export class AATelegramImageSys {
      * ПОлучит последние события для бота
      */
     public async faGetUpdates(): Promise<any> {
-       
+
         let respAxios = await axios.get(`${this.sTelegramApiUrl}/bot${this.token}/getUpdates`);
 
         return respAxios.data;

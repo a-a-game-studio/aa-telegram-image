@@ -7,6 +7,8 @@ app.options('*', cors());
 
 const bodyParser = require('body-parser');
 
+import { db } from "./DBConnect";
+
 
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(bodyParser.json({ limit: '50mb', extended: true }));
@@ -46,18 +48,18 @@ app.get('/', function (req: any, res: any) {
 
 app.post(AATelegramImage.ImgUploadR.route, (req: any, resp: any, next: any) => {
     const sharedMemSys = new SharedMemSys.SharedMemSys(appMem);
-    const aATelegramImage = new AATelegramImage.AATelegramImage(bot.token, null, sharedMemSys);
+    const aATelegramImage = new AATelegramImage.AATelegramImage(bot.token, bot.chat_id, db, sharedMemSys);
     aATelegramImage.faFileUploadCtrl(req, resp, next);
 });
 
 app.get(AATelegramImage.ImgGetR.route, (req: any, resp: any, next: any) => {
     const sharedMemSys = new SharedMemSys.SharedMemSys(appMem);
-    const aATelegramImage = new AATelegramImage.AATelegramImage(bot.token, null, sharedMemSys);
+    const aATelegramImage = new AATelegramImage.AATelegramImage(bot.token, bot.chat_id, db, sharedMemSys);
     aATelegramImage.faFileGetCtrl(req, resp, next);
 });
 
 
-
-app.listen(3008, function () {
-    console.log('Example app listening on port 3000!');
+const port = 3008
+app.listen(port, function () {
+    console.log(`server start at port ${port}`);
 });
